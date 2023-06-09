@@ -32,7 +32,8 @@ public class PrefToolUI extends JFrame {
      * Constructs a new instance of the PrefToolUI.
      *
      * <P>
-     * This instance will assemble the main frame for the user interface. Clients will need to call
+     * This instance will assemble the main frame for the user interface. Clients
+     * will need to call
      * {@linkplain #setVisible(boolean) setVisible(true)} to show the window.
      */
     public PrefToolUI() {
@@ -50,8 +51,9 @@ public class PrefToolUI extends JFrame {
         var moveNodeUIAction = new MoveNodeUIAction(preferencesNodeTree);
 
         nodeAddressLabel.addPropertyChangeListener("text",
-                new AddressLabelTextChangeListener(List.of(exportUIAction, removeNodeUIAction,
-                        newNodeUIAction, addPreferencesKeyUIAction, moveNodeUIAction)));
+                new AddressLabelTextChangeListener(List.of(exportUIAction,
+                        newNodeUIAction, addPreferencesKeyUIAction),
+                        List.of(removeNodeUIAction, moveNodeUIAction)));
 
         preferencesNodeTree.addTreeSelectionListener(
                 new PreferencesTreeSelectionListener(preferencesValuesTable, nodeAddressLabel));
@@ -60,14 +62,16 @@ public class PrefToolUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(createMenuBar(importUIAction, exportUIAction, new ExitUIAction(),
                 newNodeUIAction, addPreferencesKeyUIAction, removeNodeUIAction, moveNodeUIAction));
+        addWindowListener(new PrefToolWindowListener());
         pack();
     }
 
     /**
      *
-     * @param preferencesNodeTree JTree with Preferences nodes.
+     * @param preferencesNodeTree    JTree with Preferences nodes.
      * @param preferencesValuesTable JTable for Preferences keys, types and values.
-     * @param nodeAddressLabel JLabel that displays the Preferences node "address".
+     * @param nodeAddressLabel       JLabel that displays the Preferences node
+     *                               "address".
      * @return JPanel containing the user interface layout.
      */
     private JPanel createMainUIPanel(JTree preferencesNodeTree, JTable preferencesValuesTable,
@@ -115,7 +119,7 @@ public class PrefToolUI extends JFrame {
 
     /**
      *
-     * @param tree JTree with Preferences nodes.
+     * @param tree        JTree with Preferences nodes.
      * @param minimumSize Dimension for the JScrollPane.
      * @return the JScrollPane for the JTree.
      */
@@ -151,7 +155,7 @@ public class PrefToolUI extends JFrame {
 
     /**
      *
-     * @param treeView JScrollPane containing the JTree.
+     * @param treeView  JScrollPane containing the JTree.
      * @param tableView JScrollPane containing the JTable.
      * @return JSplitPane with the tree on the left and the table on the right.
      */
@@ -192,13 +196,13 @@ public class PrefToolUI extends JFrame {
 
     /**
      *
-     * @param importUIAction Action for the import JMenuItem.
-     * @param exportUIAction Action for the export JMenuItem.
-     * @param exitUIAction Action for the exit JMenuItem.
-     * @param newNodeUIAction Action for the new node JMenuItem.
+     * @param importUIAction            Action for the import JMenuItem.
+     * @param exportUIAction            Action for the export JMenuItem.
+     * @param exitUIAction              Action for the exit JMenuItem.
+     * @param newNodeUIAction           Action for the new node JMenuItem.
      * @param addPreferencesKeyUIAction Action for the remove node JMenuItem.
-     * @param removeNodeUIAction Action for the remove node JMenuItem.
-     * @param moveNodeUIAction Action for the move node JMenuItem.
+     * @param removeNodeUIAction        Action for the remove node JMenuItem.
+     * @param moveNodeUIAction          Action for the move node JMenuItem.
      * @return the menu for the user interface.
      */
     private JMenuBar createMenuBar(Action importUIAction, Action exportUIAction,
@@ -216,7 +220,7 @@ public class PrefToolUI extends JFrame {
      *
      * @param importAction Action to execute for imports.
      * @param exportAction Action to execute for exports.
-     * @param exitAction Action to execute for exits.
+     * @param exitAction   Action to execute for exits.
      * @return the File JMenu.
      */
     private JMenu createFileMenu(Action importAction, Action exportAction, Action exitAction) {
@@ -259,8 +263,8 @@ public class PrefToolUI extends JFrame {
      * Utility to create a JMenuItem for executing the export Action.
      *
      * @param exportAction Action to execute for exports.
-     * @param name the name of the JMenuItem.
-     * @param text the text for the JMenuItem.
+     * @param name         the name of the JMenuItem.
+     * @param text         the text for the JMenuItem.
      * @return the export JMenuItem.
      */
     private JMenuItem createExportMenuItem(Action exportAction, String name, String text) {
@@ -284,9 +288,9 @@ public class PrefToolUI extends JFrame {
     /**
      *
      * @param newNodeAction Action for the new node JMenuItem.
-     * @param addKeyAction Action to add key value pair to a Preferences node.
-     * @param removeAction Action to execute for Preferences node removal.
-     * @param moveAction Action to execute for moving a Preferences node.
+     * @param addKeyAction  Action to add key value pair to a Preferences node.
+     * @param removeAction  Action to execute for Preferences node removal.
+     * @param moveAction    Action to execute for moving a Preferences node.
      * @return the Edit JMenu.
      */
     private JMenu createEditMenu(Action newNodeAction, Action addKeyAction, Action removeAction,
@@ -308,7 +312,7 @@ public class PrefToolUI extends JFrame {
     /**
      *
      * @param newNodeAction Action for the new node JMenuItem.
-     * @param addKeyAction Action for the new key JMenuItem.
+     * @param addKeyAction  Action for the new key JMenuItem.
      * @return the New (sub) JMenu.
      */
     private JMenu createEditNewSubmenu(Action newNodeAction, Action addKeyAction) {

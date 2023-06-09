@@ -3,6 +3,8 @@ package com.github.argherna.preftool.runtime.ui;
 import java.awt.event.ActionEvent;
 import java.lang.System.Logger.Level;
 import java.util.Objects;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
@@ -10,6 +12,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import com.github.argherna.preftool.FlushPreferences;
+import com.github.argherna.preftool.RemovePreferencesNode;
 
 /**
  * An Action that removes a Preferences node.
@@ -17,8 +21,7 @@ import javax.swing.tree.TreePath;
 @SuppressWarnings("serial")
 class RemoveNodeUIAction extends AbstractPreferenceUIAction {
 
-    private static final System.Logger LOGGER =
-            System.getLogger(RemoveNodeUIAction.class.getName());
+    private static final System.Logger LOGGER = System.getLogger(RemoveNodeUIAction.class.getName());
 
     private final JTree tree;
 
@@ -35,8 +38,10 @@ class RemoveNodeUIAction extends AbstractPreferenceUIAction {
      * Processes the given ActionEvent.
      *
      * <P>
-     * Preferences will be removed if the Preferences node can be determined from the ActionEvent.
-     * Errors are logged and feedback is given to the user. If the Preferences cannot be deleted,
+     * Preferences will be removed if the Preferences node can be determined from
+     * the ActionEvent.
+     * Errors are logged and feedback is given to the user. If the Preferences
+     * cannot be deleted,
      * the UI will not be updated.
      *
      * @param e the ActionEvent.
@@ -44,14 +49,38 @@ class RemoveNodeUIAction extends AbstractPreferenceUIAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         var preferences = getPreferencesFromNodeAddress();
+        var parent = preferences.parent();
+        parent.addNodeChangeListener(new TreeModelNodeChangeListener(tree.getModel()));
+        var nodename = preferences.name();
+        LOGGER.log(Level.INFO, "Removing {0}", nodename);
         if (Objects.nonNull(preferences)) {
             try {
                 // TODO: NOTHING WORKS CONSISTENTLY WHEN REMOVING PREF NODES!!! WHY????
-                preferences.removeNode();
+                // preferences.removeNode();
+                var removeNodeAction = new RemovePreferencesNode(preferences);
+                removeNodeAction.call();
+
+                if (Objects.nonNull(parent)) {
+                    parent.sync();
+                }
             } catch (Exception ex) {
                 handleException(ex);
                 return;
             }
+        } else {
+            LOGGER.log(Level.WARNING, "Unable to retrieve preferences for delete!");
+        }
+
+        // TODO: Temporary check
+        var nodepath = getPreferencesNodeAddress().split(":/")[1];
+        try {
+            LOGGER.log(Level.INFO, "Checking for existence of {0}", nodepath);
+            if (Preferences.userRoot().nodeExists(nodepath)) {
+                LOGGER.log(Level.WARNING, "{0} was not deleted!", nodepath);
+            }
+        } catch (BackingStoreException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
 
         var model = (DefaultTreeModel) tree.getModel();

@@ -1,5 +1,6 @@
 package com.github.argherna.preftool;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
 
@@ -36,6 +37,7 @@ public class FlushPreferences implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         LOGGER.log(System.Logger.Level.INFO, "Flushing {0}", preferences);
+        preferences.sync();
         preferences.flush();
         return null;
     }
