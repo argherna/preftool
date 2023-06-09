@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -72,10 +74,10 @@ public class ExportPreferences implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         if (nodeOnly) {
-            LOGGER.log(System.Logger.Level.INFO, "Exporting node {0} preferences XML", preferences);
+            LOGGER.log(INFO, "Exporting node {0} preferences XML", preferences);
             preferences.exportNode(outputStream);
         } else {
-            LOGGER.log(System.Logger.Level.INFO, "Exporting subtree {0} preferences XML", preferences);
+            LOGGER.log(INFO, "Exporting subtree {0} preferences XML", preferences);
             preferences.exportSubtree(outputStream);
         }
         return null;

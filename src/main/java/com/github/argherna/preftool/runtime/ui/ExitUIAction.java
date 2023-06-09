@@ -6,7 +6,6 @@ import javax.swing.AbstractAction;
 /**
  * Action that exits the UI, closing the application.
  */
-@SuppressWarnings("serial")
 class ExitUIAction extends AbstractAction {
 
     ExitUIAction() {

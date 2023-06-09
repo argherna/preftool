@@ -19,7 +19,6 @@ import com.github.argherna.preftool.AddPreferencesNode;
 import com.github.argherna.preftool.PreferencesUtilities;
 import com.github.argherna.preftool.RemovePreferencesNode;
 
-@SuppressWarnings("serial")
 class PreferencesTreeTransferHandler extends TransferHandler {
 
     private final DataFlavor nodeFlavor;

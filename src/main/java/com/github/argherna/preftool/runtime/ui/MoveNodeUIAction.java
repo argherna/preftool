@@ -17,7 +17,6 @@ import com.github.argherna.preftool.AddPreferencesNode;
 import com.github.argherna.preftool.PreferencesUtilities;
 import com.github.argherna.preftool.RemovePreferencesNode;
 
-@SuppressWarnings("serial")
 class MoveNodeUIAction extends AbstractPreferenceUIAction {
 
     private final JTree preferencesNodeTree;

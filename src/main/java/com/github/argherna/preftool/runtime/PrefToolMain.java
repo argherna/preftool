@@ -28,15 +28,6 @@ public final class PrefToolMain {
             System.err.println("Couldn't use system look and feel.");
         }
 
-        // try {
-        // for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-        // if ("Nimbus".equals(info.getName())) {
-        // UIManager.setLookAndFeel(info.getClassName());
-        // break;
-        // }
-        // }
-        // } catch (Exception ex) {
-        // }
         // Schedule a job for the event dispatch thread:
         // creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {

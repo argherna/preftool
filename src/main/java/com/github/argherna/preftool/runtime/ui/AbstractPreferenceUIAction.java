@@ -1,8 +1,10 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.INFO;
+
 import java.awt.Component;
 import java.io.File;
-import java.lang.System.Logger.Level;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
@@ -12,7 +14,6 @@ import javax.swing.JOptionPane;
 /**
  * Base class for many of the Action implementations.
  */
-@SuppressWarnings("serial")
 abstract class AbstractPreferenceUIAction extends AbstractAction {
 
     static Boolean DISABLE_ACTIONS = Boolean
@@ -28,7 +29,7 @@ abstract class AbstractPreferenceUIAction extends AbstractAction {
     // Log system property if set.
     static {
         if (DISABLE_ACTIONS) {
-            LOGGER.log(Level.INFO,
+            LOGGER.log(INFO,
                     "disableActions set; certain changes to preferences will not happen.");
         }
     }
@@ -85,7 +86,7 @@ abstract class AbstractPreferenceUIAction extends AbstractAction {
      */
     void handleUIError(Exception ex, String errTitle, Component parentComponent) {
         var message = String.format("An error occurred: %s", ex.getMessage());
-        LOGGER.log(Level.ERROR, message, ex);
+        LOGGER.log(ERROR, message, ex);
         JOptionPane.showMessageDialog(parentComponent, message, errTitle,
                 JOptionPane.ERROR_MESSAGE);
     }

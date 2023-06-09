@@ -10,7 +10,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 /**
  * TreeCellRenderer for Preferences data.
  */
-@SuppressWarnings("serial")
 class PreferencesTreeCellRenderer extends DefaultTreeCellRenderer {
 
     /**

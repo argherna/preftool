@@ -14,7 +14,6 @@ import com.github.argherna.preftool.ImportPreferences;
 /**
  * An Action that imports Preferences from an XML file.
  */
-@SuppressWarnings("serial")
 class ImportUIAction extends AbstractPreferenceUIAction {
 
     private final JTree preferencesNodeTree;

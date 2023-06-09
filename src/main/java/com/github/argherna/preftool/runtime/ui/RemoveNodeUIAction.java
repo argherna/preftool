@@ -1,7 +1,10 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.INFO;
+import static java.lang.System.Logger.Level.WARNING;
+
 import java.awt.event.ActionEvent;
-import java.lang.System.Logger.Level;
 import java.util.Objects;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -12,13 +15,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import com.github.argherna.preftool.FlushPreferences;
 import com.github.argherna.preftool.RemovePreferencesNode;
 
 /**
  * An Action that removes a Preferences node.
  */
-@SuppressWarnings("serial")
 class RemoveNodeUIAction extends AbstractPreferenceUIAction {
 
     private static final System.Logger LOGGER = System.getLogger(RemoveNodeUIAction.class.getName());
@@ -52,7 +53,7 @@ class RemoveNodeUIAction extends AbstractPreferenceUIAction {
         var parent = preferences.parent();
         parent.addNodeChangeListener(new TreeModelNodeChangeListener(tree.getModel()));
         var nodename = preferences.name();
-        LOGGER.log(Level.INFO, "Removing {0}", nodename);
+        LOGGER.log(INFO, "Removing {0}", nodename);
         if (Objects.nonNull(preferences)) {
             try {
                 // TODO: NOTHING WORKS CONSISTENTLY WHEN REMOVING PREF NODES!!! WHY????
@@ -68,15 +69,15 @@ class RemoveNodeUIAction extends AbstractPreferenceUIAction {
                 return;
             }
         } else {
-            LOGGER.log(Level.WARNING, "Unable to retrieve preferences for delete!");
+            LOGGER.log(WARNING, "Unable to retrieve preferences for delete!");
         }
 
         // TODO: Temporary check
         var nodepath = getPreferencesNodeAddress().split(":/")[1];
         try {
-            LOGGER.log(Level.INFO, "Checking for existence of {0}", nodepath);
+            LOGGER.log(INFO, "Checking for existence of {0}", nodepath);
             if (Preferences.userRoot().nodeExists(nodepath)) {
-                LOGGER.log(Level.WARNING, "{0} was not deleted!", nodepath);
+                LOGGER.log(WARNING, "{0} was not deleted!", nodepath);
             }
         } catch (BackingStoreException e1) {
             // TODO Auto-generated catch block
@@ -97,7 +98,7 @@ class RemoveNodeUIAction extends AbstractPreferenceUIAction {
 
     private void handleException(Exception ex) {
         var message = String.format("An error occurred: %s", ex.getMessage());
-        LOGGER.log(Level.ERROR, message, ex);
+        LOGGER.log(ERROR, message, ex);
         JOptionPane.showMessageDialog(null, message, "Remove error", JOptionPane.ERROR_MESSAGE);
     }
 }

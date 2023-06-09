@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
@@ -37,7 +39,7 @@ public class RemovePreferencesKey implements Callable<Void> {
      */
     @Override
     public Void call() throws Exception {
-        LOGGER.log(System.Logger.Level.INFO, "Removing key {0} from node {1}", key, preferences);
+        LOGGER.log(INFO, "Removing key {0} from node {1}", key, preferences);
         preferences.remove(key);
         return null;
     }

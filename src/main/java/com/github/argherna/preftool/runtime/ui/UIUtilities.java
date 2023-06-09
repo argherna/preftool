@@ -1,7 +1,8 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.ERROR;
+
 import java.awt.Component;
-import java.lang.System.Logger.Level;
 import java.util.Enumeration;
 import java.util.StringJoiner;
 import java.util.prefs.BackingStoreException;
@@ -204,7 +205,7 @@ class UIUtilities {
      */
     static void handleUIError(Exception ex, String errTitle, Component parentComponent) {
         var message = String.format("An error occurred: %s", ex.getMessage());
-        LOGGER.log(Level.ERROR, message, ex);
+        LOGGER.log(ERROR, message, ex);
         JOptionPane.showMessageDialog(parentComponent, message, errTitle,
                 JOptionPane.ERROR_MESSAGE);
     }

@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
 
@@ -40,7 +42,7 @@ public class AddPreferencesNode implements Callable<Preferences> {
      */
     @Override
     public Preferences call() throws Exception {
-        LOGGER.log(System.Logger.Level.INFO, "Adding preferences node {0} to {1}",
+        LOGGER.log(INFO, "Adding preferences node {0} to {1}",
                 path, rootPreferences);
         // This will add the node if it doesn't exist.
         return rootPreferences.node(path);

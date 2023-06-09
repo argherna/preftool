@@ -25,7 +25,6 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * Main panel for the PrefTool user interface.
  */
-@SuppressWarnings("serial")
 public class PrefToolUI extends JFrame {
 
     /**

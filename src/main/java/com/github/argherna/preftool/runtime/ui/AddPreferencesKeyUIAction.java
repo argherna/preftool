@@ -13,7 +13,6 @@ import com.github.argherna.preftool.PreferencesUtilities;
 /**
  * Action that adds a key and value pair to a Preferences node.
  */
-@SuppressWarnings("serial")
 class AddPreferencesKeyUIAction extends AbstractPreferenceUIAction {
 
     private final JTable preferencesValuesTable;

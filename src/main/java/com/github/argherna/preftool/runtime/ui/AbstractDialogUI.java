@@ -1,7 +1,8 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.ERROR;
+
 import java.awt.Component;
-import java.lang.System.Logger.Level;
 import java.util.Objects;
 
 import javax.swing.DefaultListCellRenderer;
@@ -56,7 +57,7 @@ abstract class AbstractDialogUI {
         try {
             return getTextFrom(doc);
         } catch (BadLocationException ex) {
-            LOGGER.log(Level.ERROR, errorLogMessage, ex);
+            LOGGER.log(ERROR, errorLogMessage, ex);
             JOptionPane.showMessageDialog(null, ex.getMessage(), errorTitle,
                     JOptionPane.ERROR_MESSAGE);
             return "";

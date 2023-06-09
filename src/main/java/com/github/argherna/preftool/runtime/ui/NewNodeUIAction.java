@@ -1,7 +1,8 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.ERROR;
+
 import java.awt.event.ActionEvent;
-import java.lang.System.Logger.Level;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -62,7 +63,7 @@ class NewNodeUIAction extends AbstractPreferenceUIAction {
                     parent.getChildCount());
         } catch (Exception ex) {
             var message = String.format("An error occurred: %s", ex.getMessage());
-            LOGGER.log(Level.ERROR, message, ex);
+            LOGGER.log(ERROR, message, ex);
             JOptionPane.showMessageDialog(null, message, "Add error", JOptionPane.ERROR_MESSAGE);
         }
     }

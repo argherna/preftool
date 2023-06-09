@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class ImportPreferences implements Callable<Void> {
      * @param inputStream the InputStream to read XML from.
      */
     public ImportPreferences(InputStream inputStream) {
-        LOGGER.log(System.Logger.Level.INFO, "Importing preferences");
+        LOGGER.log(INFO, "Importing preferences");
         this.inputStream = inputStream;
     }
 

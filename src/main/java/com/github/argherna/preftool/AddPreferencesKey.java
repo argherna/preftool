@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
 
@@ -52,7 +54,7 @@ public class AddPreferencesKey implements Callable<Void> {
      */
     @Override
     public Void call() throws Exception {
-        LOGGER.log(System.Logger.Level.INFO, "Adding key {0} to {1}", key, preferences);
+        LOGGER.log(INFO, "Adding key {0} to {1}", key, preferences);
         if (type.equals(boolean.class)) {
             preferences.putBoolean(key, Boolean.valueOf(value.toString()));
         } else if (type.equals(byte[].class)) {

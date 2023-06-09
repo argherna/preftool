@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.prefs.BackingStoreException;
@@ -37,7 +39,7 @@ public class RemovePreferencesNode implements Callable<Void> {
      */
     @Override
     public Void call() throws Exception {
-        LOGGER.log(System.Logger.Level.INFO, "Removing {0}", preferences);
+        LOGGER.log(INFO, "Removing {0}", preferences);
         preferences.removeNode();
         return null;
     }

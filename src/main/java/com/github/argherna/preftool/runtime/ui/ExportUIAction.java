@@ -15,7 +15,6 @@ import com.github.argherna.preftool.ExportPreferences;
 /**
  * An Action that exports a Preferences node.
  */
-@SuppressWarnings("serial")
 class ExportUIAction extends AbstractPreferenceUIAction {
 
     /**

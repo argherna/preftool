@@ -1,8 +1,9 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.WARNING;
+
 import java.awt.Component;
 import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -67,7 +68,7 @@ class PreferencesTreeSelectionListener implements TreeSelectionListener {
         } catch (BackingStoreException ex) {
             var message = String.format("Preferences problem while building table view: %s",
                     ex.getMessage());
-            LOGGER.log(Level.WARNING, message, ex);
+            LOGGER.log(WARNING, message, ex);
 
             JOptionPane.showMessageDialog((Component) e.getSource(), message, "Error",
                     JOptionPane.ERROR_MESSAGE);
