@@ -1,5 +1,8 @@
 package com.github.argherna.preftool;
 
+import static com.github.argherna.preftool.Constants.DRY_RUN;
+import static com.github.argherna.preftool.Constants.SUPPRESS_FLUSH;
+import static com.github.argherna.preftool.Constants.SYSTEM_ROOT;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.util.Objects;
@@ -68,14 +71,14 @@ public class RemovePreferencesKey implements Callable<Void> {
      * <P>
      * The system properties you can set are:
      * <DL>
-     * <DT><CODE>com.github.argherna.preftool.RemovePreferencesKey.dryRun</CODE>
+     * <DT><CODE>com.github.argherna.preftool.dryRun</CODE>
      * <DD>If <CODE>true</CODE>, do not actually remove the key from the
      * preferences node but print the name of the class, root, node, and key
      * exit with status <CODE>2</CODE>.
-     * <DT><CODE>com.github.argherna.preftool.RemovePreferencesKey.systemRoot</CODE>
+     * <DT><CODE>com.github.argherna.preftool.systemRoot</CODE>
      * <DD>If <CODE>true</CODE>, search for the preferences node to remove the key
      * from under the system root. By default, the user root is searched.
-     * <DT><CODE>com.github.argherna.preftool.RemovePreferencesKey.suppressFlush</CODE>
+     * <DT><CODE>com.github.argherna.preftool.suppressFlush</CODE>
      * <DD>If <CODE>true</CODE>, do not flush (commit) the changes to the named
      * node. Default action is to flush the change.
      * </DL>
@@ -106,21 +109,18 @@ public class RemovePreferencesKey implements Callable<Void> {
             argsCount++;
         }
 
-        var systemRoot = Boolean.getBoolean(RemovePreferencesKey.class.getName() + ".systemRoot");
-        var dryRun = Boolean.getBoolean(RemovePreferencesKey.class.getName() + ".dryRun");
-        if (dryRun) {
-            var root = systemRoot ? "system" : "user";
+        if (DRY_RUN) {
+            var root = SYSTEM_ROOT ? "system" : "user";
             System.err.printf("%s Dry Run:root=%s,node=%s,key=%s%n",
                     RemovePreferencesKey.class.getName(), root, node, key);
             System.exit(2);
         }
 
-        var prefs = systemRoot ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
+        var prefs = SYSTEM_ROOT ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
         var removePreferencesKeyAction = new RemovePreferencesKey(prefs, key);
-        var suppressFlush = Boolean.getBoolean(RemovePreferencesKey.class.getName() + ".suppressFlush");
         try {
             removePreferencesKeyAction.call();
-            if (!suppressFlush) {
+            if (!SUPPRESS_FLUSH) {
                 new FlushPreferences(prefs).call();
             }
         } catch (Exception e) {

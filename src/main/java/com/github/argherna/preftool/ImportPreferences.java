@@ -1,5 +1,6 @@
 package com.github.argherna.preftool;
 
+import static com.github.argherna.preftool.Constants.DRY_RUN;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.io.File;
@@ -72,9 +73,6 @@ public class ImportPreferences implements Callable<Void> {
      * <DD>If <CODE>true</CODE>, do not actually import the preferences XML but
      * print the name of the class, root, and XML file name and exit with status
      * <CODE>2</CODE>.
-     * <DT><CODE>com.github.argherna.preftool.ImportPreferences.systemRoot</CODE>
-     * <DD>If <CODE>true</CODE>, import the preferences XML under the system root.
-     * By default, the XML is imported under the user root.
      * </DL>
      * 
      * @param args command line arguments
@@ -113,12 +111,9 @@ public class ImportPreferences implements Callable<Void> {
             argsCount++;
         }
 
-        var systemRoot = Boolean.getBoolean(ImportPreferences.class.getName() + ".systemRoot");
-        var dryRun = Boolean.getBoolean(ImportPreferences.class.getName() + ".dryRun");
-        if (dryRun) {
-            var root = systemRoot ? "system" : "user";
+        if (DRY_RUN) {
             var fname = (filename.isBlank()) ? "<System.in>" : filename;
-            System.err.printf("%s Dry Run:root=%s,filename=%s%n", ImportPreferences.class.getName(), root, fname);
+            System.err.printf("%s Dry Run:filename=%s%n", ImportPreferences.class.getName(), fname);
             System.exit(2);
         }
 

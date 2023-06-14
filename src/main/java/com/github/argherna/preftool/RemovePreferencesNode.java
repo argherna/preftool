@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static com.github.argherna.preftool.Constants.DRY_RUN;
+import static com.github.argherna.preftool.Constants.SYSTEM_ROOT;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.util.Objects;
@@ -63,11 +65,11 @@ public class RemovePreferencesNode implements Callable<Void> {
      * <P>
      * The system properties you can set are:
      * <DL>
-     * <DT><CODE>com.github.argherna.preftool.RemovePreferencesNode.dryRun</CODE>
+     * <DT><CODE>com.github.argherna.preftool.dryRun</CODE>
      * <DD>If <CODE>true</CODE>, do not actually remove the preferences node but
      * print the name
      * of the node to be removed and exit with status <CODE>2</CODE>.
-     * <DT><CODE>com.github.argherna.preftool.RemovePreferencesNode.systemRoot</CODE>
+     * <DT><CODE>com.github.argherna.preftool.systemRoot</CODE>
      * <DD>If <CODE>true</CODE>, search for the preferences node to remove under the
      * system root. By default, the user root is searched.
      * </DL>
@@ -83,16 +85,14 @@ public class RemovePreferencesNode implements Callable<Void> {
         }
 
         var node = args[0];
-        var dryRun = Boolean.getBoolean(RemovePreferencesNode.class.getName() + ".dryRun");
-        var systemRoot = Boolean.getBoolean(RemovePreferencesNode.class.getName() + ".systemRoot");
-        if (dryRun) {
-            var root = systemRoot ? "system" : "user";
+        if (DRY_RUN) {
+            var root = SYSTEM_ROOT ? "system" : "user";
             System.err.printf("%s Dry Run: root=%s,node=%s%n",
                     RemovePreferencesNode.class, root, node);
             System.exit(2);
         }
 
-        var prefs = systemRoot ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
+        var prefs = SYSTEM_ROOT ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
         var removeNodeAction = new RemovePreferencesNode(prefs);
         try {
             removeNodeAction.call();

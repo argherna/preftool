@@ -1,5 +1,7 @@
 package com.github.argherna.preftool;
 
+import static com.github.argherna.preftool.Constants.DRY_RUN;
+import static com.github.argherna.preftool.Constants.SYSTEM_ROOT;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.io.File;
@@ -115,11 +117,11 @@ public class ExportPreferences implements Callable<Void> {
      * <P>
      * The system properties you can set are:
      * <DL>
-     * <DT><CODE>com.github.argherna.preftool.ExportPreferences.dryRun</CODE>
+     * <DT><CODE>com.github.argherna.preftool.dryRun</CODE>
      * <DD>If <CODE>true</CODE>, do not actually export the preferences XML but
      * print the name of the class, root, node name, and XML file name and exit with
      * status <CODE>2</CODE>.
-     * <DT><CODE>com.github.argherna.preftool.ExportPreferences.systemRoot</CODE>
+     * <DT><CODE>com.github.argherna.preftool.systemRoot</CODE>
      * <DD>If <CODE>true</CODE>, export the preferences XML under the system root.
      * By default, the XML is exported under the user root.
      * </DL>
@@ -130,6 +132,12 @@ public class ExportPreferences implements Callable<Void> {
      */
     public static void main(String[] args) {
 
+        if (args.length == 0) {
+            System.err.printf("Missing argument: nodename%n");
+            usage();
+            System.exit(1);
+        }
+        
         if (args.length == 1 && argIsHelpFlag(args[0])) {
             usage();
             System.exit(2);
@@ -163,17 +171,15 @@ public class ExportPreferences implements Callable<Void> {
             argsCount++;
         }
 
-        var systemRoot = Boolean.getBoolean(ExportPreferences.class.getName() + ".systemRoot");
-        var dryRun = Boolean.getBoolean(ExportPreferences.class.getName() + ".dryRun");
-        if (dryRun) {
-            var root = systemRoot ? "system" : "user";
+        if (DRY_RUN) {
+            var root = SYSTEM_ROOT ? "system" : "user";
             var fname = (filename.isBlank()) ? "<System.out>" : filename;
             System.err.printf("%s Dry Run:root=%s,node=%s,filename=%s,nodeOnly=%b%n", ExportPreferences.class.getName(),
                     root, nodename, fname, nodeOnly);
             System.exit(2);
         }
 
-        var preferences = systemRoot ? Preferences.systemRoot().node(nodename) : Preferences.userRoot().node(nodename);
+        var preferences = SYSTEM_ROOT ? Preferences.systemRoot().node(nodename) : Preferences.userRoot().node(nodename);
         try {
             if (!filename.isBlank()) {
                 outstream = new FileOutputStream(new File(filename));

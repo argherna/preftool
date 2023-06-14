@@ -1,5 +1,8 @@
 package com.github.argherna.preftool;
 
+import static com.github.argherna.preftool.Constants.DRY_RUN;
+import static com.github.argherna.preftool.Constants.SUPPRESS_FLUSH;
+import static com.github.argherna.preftool.Constants.SYSTEM_ROOT;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.util.concurrent.Callable;
@@ -146,14 +149,14 @@ public class AddPreferencesKey implements Callable<Void> {
      * <P>
      * The system properties you can set are:
      * <DL>
-     * <DT><CODE>com.github.argherna.preftool.AddPreferencesKey.dryRun</CODE>
+     * <DT><CODE>com.github.argherna.preftool.dryRun</CODE>
      * <DD>If <CODE>true</CODE>, do not actually add the key and value to the
      * preferences node but print the name of the class, root, node, key, and value
      * and exit with status <CODE>2</CODE>.
-     * <DT><CODE>com.github.argherna.preftool.AddPreferencesKey.systemRoot</CODE>
+     * <DT><CODE>com.github.argherna.preftool.systemRoot</CODE>
      * <DD>If <CODE>true</CODE>, search for the preferences node to add the key to
      * under the system root. By default, the user root is searched.
-     * <DT><CODE>com.github.argherna.preftool.AddPreferencesKey.suppressFlush</CODE>
+     * <DT><CODE>com.github.argherna.preftool.suppressFlush</CODE>
      * <DD>If <CODE>true</CODE>, do not flush (commit) the changes to the named
      * node. Default action is to flush the change.
      * </DL>
@@ -214,21 +217,18 @@ public class AddPreferencesKey implements Callable<Void> {
             argsCount++;
         }
 
-        var systemRoot = Boolean.getBoolean(AddPreferencesKey.class.getName() + ".systemRoot");
-        var dryRun = Boolean.getBoolean(AddPreferencesKey.class.getName() + ".dryRun");
-        if (dryRun) {
-            var root = systemRoot ? "system" : "user";
+        if (DRY_RUN) {
+            var root = SYSTEM_ROOT ? "system" : "user";
             System.err.printf("%s Dry Run: root=%s,type=%s,node=%s,key=%s,value=%s%n",
                     AddPreferencesKey.class, root, type.toString(), node, key, value);
             System.exit(2);
         }
 
-        var prefs = systemRoot ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
+        var prefs = SYSTEM_ROOT ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
         var addPreferencesKeyAction = new AddPreferencesKey(prefs, key, type, value);
-        var suppressFlush = Boolean.getBoolean(AddPreferencesKey.class.getName() + ".suppressFlush");
         try {
             addPreferencesKeyAction.call();
-            if (!suppressFlush) {
+            if (!SUPPRESS_FLUSH) {
                 new FlushPreferences(prefs).call();
             }
         } catch (Exception e) {

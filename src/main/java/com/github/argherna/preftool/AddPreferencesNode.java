@@ -1,5 +1,8 @@
 package com.github.argherna.preftool;
 
+import static com.github.argherna.preftool.Constants.DRY_RUN;
+import static com.github.argherna.preftool.Constants.SUPPRESS_FLUSH;
+import static com.github.argherna.preftool.Constants.SYSTEM_ROOT;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.util.concurrent.Callable;
@@ -69,13 +72,13 @@ public class AddPreferencesNode implements Callable<Preferences> {
      * <P>
      * The system properties you can set are:
      * <DL>
-     * <DT><CODE>com.github.argherna.preftool.AddPreferencesNode.dryRun</CODE>
+     * <DT><CODE>com.github.argherna.preftool.dryRun</CODE>
      * <DD>If <CODE>true</CODE>, do not actually add the preferences node but
      * print the name of the node to be added and exit with status <CODE>2</CODE>.
-     * <DT><CODE>com.github.argherna.preftool.AddPreferencesNode.systemRoot</CODE>
+     * <DT><CODE>com.github.argherna.preftool.systemRoot</CODE>
      * <DD>If <CODE>true</CODE>, add the preferences node under thesystem root. By
      * default, the preferences node is added to the user root.
-     * <DT><CODE>com.github.argherna.preftool.AddPreferencesNode.suppressFlush</CODE>
+     * <DT><CODE>com.github.argherna.preftool.suppressFlush</CODE>
      * <DD>If <CODE>true</CODE>, do not flush (commit) the changes to the named
      * node. Default action is to flush the change.
      * </DL>
@@ -91,22 +94,19 @@ public class AddPreferencesNode implements Callable<Preferences> {
             System.exit(1);
         }
 
-        var systemRoot = Boolean.getBoolean(AddPreferencesNode.class.getName() + ".systemRoot");
         var node = args[0];
-        var dryRun = Boolean.getBoolean(AddPreferencesNode.class.getName() + ".dryRun");
-        var suppressFlush = Boolean.getBoolean(AddPreferencesNode.class.getName() + ".suppressFlush");
-        if (dryRun) {
-            var root = systemRoot ? "system" : "user";
+        if (DRY_RUN) {
+            var root = SYSTEM_ROOT ? "system" : "user";
             System.err.printf("%s Dry Run:root=%s,flush=%b,node=%s%n",
-                    AddPreferencesNode.class.getName(), root, suppressFlush, node);
+                    AddPreferencesNode.class.getName(), root, SUPPRESS_FLUSH, node);
             System.exit(2);
         }
 
-        var rootPreferences = systemRoot ? Preferences.systemRoot() : Preferences.userRoot();
+        var rootPreferences = SYSTEM_ROOT ? Preferences.systemRoot() : Preferences.userRoot();
         var addAction = new AddPreferencesNode(rootPreferences, node);
         try {
             var added = addAction.call();
-            if (!suppressFlush) {
+            if (!SUPPRESS_FLUSH) {
                 new FlushPreferences(added).call();
             }
         } catch (Exception e) {
