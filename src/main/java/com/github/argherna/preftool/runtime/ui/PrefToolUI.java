@@ -40,7 +40,6 @@ public class PrefToolUI extends JFrame {
 
         var preferencesValuesTable = createPreferencesValuesTable();
         var preferencesNodeTree = createPreferencesNodeTree();
-        var removeNodeUIAction = new RemoveNodeUIAction(preferencesNodeTree);
         var importUIAction = new ImportUIAction(preferencesNodeTree);
 
         var exportUIAction = new ExportUIAction();
@@ -52,7 +51,7 @@ public class PrefToolUI extends JFrame {
         nodeAddressLabel.addPropertyChangeListener("text",
                 new AddressLabelTextChangeListener(List.of(exportUIAction,
                         newNodeUIAction, addPreferencesKeyUIAction),
-                        List.of(removeNodeUIAction, moveNodeUIAction)));
+                        List.of(moveNodeUIAction)));
 
         preferencesNodeTree.addTreeSelectionListener(
                 new PreferencesTreeSelectionListener(preferencesValuesTable, nodeAddressLabel));
@@ -60,7 +59,7 @@ public class PrefToolUI extends JFrame {
         add(createMainUIPanel(preferencesNodeTree, preferencesValuesTable, nodeAddressLabel));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(createMenuBar(importUIAction, exportUIAction, new ExitUIAction(),
-                newNodeUIAction, addPreferencesKeyUIAction, removeNodeUIAction, moveNodeUIAction));
+                newNodeUIAction, addPreferencesKeyUIAction, moveNodeUIAction));
         addWindowListener(new PrefToolWindowListener());
         pack();
     }
@@ -199,19 +198,17 @@ public class PrefToolUI extends JFrame {
      * @param exportUIAction            Action for the export JMenuItem.
      * @param exitUIAction              Action for the exit JMenuItem.
      * @param newNodeUIAction           Action for the new node JMenuItem.
-     * @param addPreferencesKeyUIAction Action for the remove node JMenuItem.
-     * @param removeNodeUIAction        Action for the remove node JMenuItem.
+     * @param addPreferencesKeyUIAction Action for the add key JMenuItem.
      * @param moveNodeUIAction          Action for the move node JMenuItem.
      * @return the menu for the user interface.
      */
     private JMenuBar createMenuBar(Action importUIAction, Action exportUIAction,
             Action exitUIAction, Action newNodeUIAction, Action addPreferencesKeyUIAction,
-            Action removeNodeUIAction, Action moveNodeUIAction) {
+            Action moveNodeUIAction) {
         var menuBar = new JMenuBar();
         menuBar.setName("menuBar");
         menuBar.add(createFileMenu(importUIAction, exportUIAction, exitUIAction));
-        menuBar.add(createEditMenu(newNodeUIAction, addPreferencesKeyUIAction, removeNodeUIAction,
-                moveNodeUIAction));
+        menuBar.add(createEditMenu(newNodeUIAction, addPreferencesKeyUIAction, moveNodeUIAction));
         return menuBar;
     }
 
@@ -288,21 +285,18 @@ public class PrefToolUI extends JFrame {
      *
      * @param newNodeAction Action for the new node JMenuItem.
      * @param addKeyAction  Action to add key value pair to a Preferences node.
-     * @param removeAction  Action to execute for Preferences node removal.
      * @param moveAction    Action to execute for moving a Preferences node.
      * @return the Edit JMenu.
      */
-    private JMenu createEditMenu(Action newNodeAction, Action addKeyAction, Action removeAction,
+    private JMenu createEditMenu(Action newNodeAction, Action addKeyAction,
             Action moveAction) {
         newNodeAction.setEnabled(false);
         addKeyAction.setEnabled(false);
-        removeAction.setEnabled(false);
         moveAction.setEnabled(false);
         var editMenu = new JMenu("Edit");
         editMenu.setName("editMenu");
         editMenu.add(createEditNewSubmenu(newNodeAction, addKeyAction));
         editMenu.addSeparator();
-        editMenu.add(createEditRemoveMenuItem(removeAction));
         editMenu.add(createEditMoveMenuItem(moveAction));
         editMenu.add(createEditRenameMenuItem(moveAction));
         return editMenu;
@@ -344,18 +338,6 @@ public class PrefToolUI extends JFrame {
         editNewKeyMenuItem.setName("editNewNodeMenuItem");
         editNewKeyMenuItem.setText("Key");
         return editNewKeyMenuItem;
-    }
-
-    /**
-     *
-     * @param removeAction Action to execute for Preferences node removals.
-     * @return Remove JMenuItem.
-     */
-    private JMenuItem createEditRemoveMenuItem(Action removeAction) {
-        var editRemoveMenuItem = new JMenuItem(removeAction);
-        editRemoveMenuItem.setName("editRemoveMenuItem");
-        editRemoveMenuItem.setText("Remove");
-        return editRemoveMenuItem;
     }
 
     /**
