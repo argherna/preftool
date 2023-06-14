@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
-import javax.swing.DropMode;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -46,12 +45,11 @@ public class PrefToolUI extends JFrame {
         var nodeAddressLabel = createNodeAddressLabel();
         var newNodeUIAction = new NewNodeUIAction(preferencesNodeTree);
         var addPreferencesKeyUIAction = new AddPreferencesKeyUIAction(preferencesValuesTable);
-        var moveNodeUIAction = new MoveNodeUIAction(preferencesNodeTree);
 
         nodeAddressLabel.addPropertyChangeListener("text",
                 new AddressLabelTextChangeListener(List.of(exportUIAction,
                         newNodeUIAction, addPreferencesKeyUIAction),
-                        List.of(moveNodeUIAction)));
+                        List.of()));
 
         preferencesNodeTree.addTreeSelectionListener(
                 new PreferencesTreeSelectionListener(preferencesValuesTable, nodeAddressLabel));
@@ -59,7 +57,7 @@ public class PrefToolUI extends JFrame {
         add(createMainUIPanel(preferencesNodeTree, preferencesValuesTable, nodeAddressLabel));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(createMenuBar(importUIAction, exportUIAction, new ExitUIAction(),
-                newNodeUIAction, addPreferencesKeyUIAction, moveNodeUIAction));
+                newNodeUIAction, addPreferencesKeyUIAction));
         addWindowListener(new PrefToolWindowListener());
         pack();
     }
@@ -109,9 +107,6 @@ public class PrefToolUI extends JFrame {
         preferencesNodeTree.setCellRenderer(new PreferencesTreeCellRenderer());
         preferencesNodeTree.setName("preferencesNodeTree");
         preferencesNodeTree.setRootVisible(true);
-        preferencesNodeTree.setDragEnabled(true);
-        preferencesNodeTree.setDropMode(DropMode.ON);
-        preferencesNodeTree.setTransferHandler(new PreferencesTreeTransferHandler());
         return preferencesNodeTree;
     }
 
@@ -199,16 +194,14 @@ public class PrefToolUI extends JFrame {
      * @param exitUIAction              Action for the exit JMenuItem.
      * @param newNodeUIAction           Action for the new node JMenuItem.
      * @param addPreferencesKeyUIAction Action for the add key JMenuItem.
-     * @param moveNodeUIAction          Action for the move node JMenuItem.
      * @return the menu for the user interface.
      */
     private JMenuBar createMenuBar(Action importUIAction, Action exportUIAction,
-            Action exitUIAction, Action newNodeUIAction, Action addPreferencesKeyUIAction,
-            Action moveNodeUIAction) {
+            Action exitUIAction, Action newNodeUIAction, Action addPreferencesKeyUIAction) {
         var menuBar = new JMenuBar();
         menuBar.setName("menuBar");
         menuBar.add(createFileMenu(importUIAction, exportUIAction, exitUIAction));
-        menuBar.add(createEditMenu(newNodeUIAction, addPreferencesKeyUIAction, moveNodeUIAction));
+        menuBar.add(createEditMenu(newNodeUIAction, addPreferencesKeyUIAction));
         return menuBar;
     }
 
@@ -285,20 +278,14 @@ public class PrefToolUI extends JFrame {
      *
      * @param newNodeAction Action for the new node JMenuItem.
      * @param addKeyAction  Action to add key value pair to a Preferences node.
-     * @param moveAction    Action to execute for moving a Preferences node.
      * @return the Edit JMenu.
      */
-    private JMenu createEditMenu(Action newNodeAction, Action addKeyAction,
-            Action moveAction) {
+    private JMenu createEditMenu(Action newNodeAction, Action addKeyAction) {
         newNodeAction.setEnabled(false);
         addKeyAction.setEnabled(false);
-        moveAction.setEnabled(false);
         var editMenu = new JMenu("Edit");
         editMenu.setName("editMenu");
         editMenu.add(createEditNewSubmenu(newNodeAction, addKeyAction));
-        editMenu.addSeparator();
-        editMenu.add(createEditMoveMenuItem(moveAction));
-        editMenu.add(createEditRenameMenuItem(moveAction));
         return editMenu;
     }
 
@@ -338,29 +325,5 @@ public class PrefToolUI extends JFrame {
         editNewKeyMenuItem.setName("editNewNodeMenuItem");
         editNewKeyMenuItem.setText("Key");
         return editNewKeyMenuItem;
-    }
-
-    /**
-     *
-     * @param moveAction Action to execute for moving a Preferences node.
-     * @return Move JMenuItem.
-     */
-    private JMenuItem createEditMoveMenuItem(Action moveAction) {
-        var editMoveMenuItem = new JMenuItem(moveAction);
-        editMoveMenuItem.setName("editMoveMenuItem");
-        editMoveMenuItem.setText("Move");
-        return editMoveMenuItem;
-    }
-
-    /**
-     *
-     * @param moveAction Action to execute for moving a Preferences node.
-     * @return Rename JMenuItem.
-     */
-    private JMenuItem createEditRenameMenuItem(Action moveAction) {
-        var editRenameMenuItem = new JMenuItem(moveAction);
-        editRenameMenuItem.setName("editRenameMenuItem");
-        editRenameMenuItem.setText("Rename");
-        return editRenameMenuItem;
     }
 }
