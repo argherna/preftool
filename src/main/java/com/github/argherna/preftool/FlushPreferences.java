@@ -1,7 +1,7 @@
 package com.github.argherna.preftool;
 
-import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**

@@ -1,10 +1,6 @@
 package com.github.argherna.preftool.runtime;
 
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-
 import javax.swing.UIManager;
-// import javax.swing.UIManager.LookAndFeelInfo;
 
 import com.github.argherna.preftool.runtime.ui.PrefToolUI;
 

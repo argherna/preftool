@@ -1,6 +1,7 @@
 package com.github.argherna.preftool.runtime.ui;
 
-import java.lang.System.Logger.Level;
+import static java.lang.System.Logger.Level.ERROR;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -90,7 +91,7 @@ class MoveNodeUI extends AbstractDialogUI {
             return getTextFrom(destinationNodeName);
         } catch (BadLocationException ex) {
             var message = String.format("An error occurred: %s", ex.getMessage());
-            LOGGER.log(Level.ERROR, message, ex);
+            LOGGER.log(ERROR, message, ex);
             JOptionPane.showMessageDialog(null, message, "Move Node Error",
                     JOptionPane.ERROR_MESSAGE);
             return null;

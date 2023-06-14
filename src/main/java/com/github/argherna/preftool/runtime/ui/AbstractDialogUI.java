@@ -13,19 +13,30 @@ import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+/**
+ * Base class for PrefEdit tool's dialog boxes.
+ */
 abstract class AbstractDialogUI {
 
-    static final System.Logger LOGGER =
-            System.getLogger(AbstractDialogUI.class.getPackageName() + ".DialogUI");
+    /** System Logger for all subclasses. */
+    static final System.Logger LOGGER = System.getLogger(AbstractDialogUI.class.getPackageName() + ".DialogUI");
 
     private String title;
 
     private boolean inputCanceled = false;
 
+    /**
+     * Shows the dialog box.
+     * 
+     * <P>
+     * Classes that override this method will format all the components for the
+     * dialog.
+     */
     abstract void showUI();
 
     /**
-     *
+     * Factory for associating a JLabel to a JComponent.
+     * 
      * @param component Component being labeled.
      * @param text      label text
      * @return JLabel with reference to labeled component.
@@ -37,7 +48,7 @@ abstract class AbstractDialogUI {
     }
 
     /**
-     *
+     * 
      * @param doc the Document to get text from.
      * @return the text in doc.
      * @throws BadLocationException if a BadLocationException occurs.
@@ -146,7 +157,7 @@ abstract class AbstractDialogUI {
     /**
      * Renders Pair instances based on the contents of the ComboBoxModel.
      */
-    @SuppressWarnings({"serial", "unchecked"})
+    @SuppressWarnings("unchecked")
     static class PairListCellRenderer<V> extends DefaultListCellRenderer {
 
         /**

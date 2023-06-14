@@ -1,5 +1,7 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static com.github.argherna.preftool.runtime.ui.AbstractPreferenceUIAction.DISABLE_ACTIONS;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -46,21 +48,18 @@ class AddressLabelTextChangeListener implements PropertyChangeListener {
                 action.setPreferencesNodeAddress(evt.getNewValue().toString());
                 action.setEnabled(true);
             }
-            if (Boolean.getBoolean(getClass().getPackageName() + ".enableMoveActions")) {
-                for (AbstractPreferenceUIAction moveAction : moveActions) {
-                    moveAction.setPreferencesNodeAddress(evt.getNewValue().toString());
-                    moveAction.setEnabled(true);
-                }
+            // TODO Issue 1: Someday when the problem of consistently deleting a preference
+            // properly from an event thread is figured out, the moveActions list can be
+            // done away with completely and the ".disableActions" system property can be
+            // removed.
+            for (AbstractPreferenceUIAction moveAction : moveActions) {
+                moveAction.setPreferencesNodeAddress(evt.getNewValue().toString());
+                moveAction.setEnabled(!DISABLE_ACTIONS);
             }
         } else if (Objects.nonNull(evt.getNewValue()) && evt.getNewValue().toString().isEmpty()) {
 
-            // Someday when the problem of consistently deleting a preference properly from
-            // an event thread is figured out, the moveActions list can be done away with
-            // completely and the ".enableMoveActions" system property can be removed.
             actions.stream().forEach(a -> a.setEnabled(false));
-            if (Boolean.getBoolean(getClass().getPackageName() + ".enableMoveActions")) {
-                moveActions.stream().forEach(ma -> ma.setEnabled(false));
-            }
+            moveActions.stream().forEach(ma -> ma.setEnabled(false));
         }
     }
 

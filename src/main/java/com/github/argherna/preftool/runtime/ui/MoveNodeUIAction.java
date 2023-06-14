@@ -1,5 +1,7 @@
 package com.github.argherna.preftool.runtime.ui;
 
+import static java.lang.System.Logger.Level.TRACE;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.lang.System.Logger.Level;
@@ -121,7 +123,7 @@ class MoveNodeUIAction extends AbstractPreferenceUIAction {
         Enumeration<TreeNode> e = root.breadthFirstEnumeration();
         while (e.hasMoreElements() && Objects.isNull(rootNode)) {
             var node = (DefaultMutableTreeNode) e.nextElement();
-            LOGGER.log(Level.TRACE, "node={0}", node);
+            LOGGER.log(TRACE, "node={0}", node);
             Object userObj = node.getUserObject();
             if (userObj instanceof String) {
                 var prefname = (String) userObj;

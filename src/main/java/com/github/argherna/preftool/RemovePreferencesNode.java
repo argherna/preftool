@@ -70,9 +70,6 @@ public class RemovePreferencesNode implements Callable<Void> {
      * <DT><CODE>com.github.argherna.preftool.RemovePreferencesNode.systemRoot</CODE>
      * <DD>If <CODE>true</CODE>, search for the preferences node to remove under the
      * system root. By default, the user root is searched.
-     * <DT><CODE>com.github.argherna.preftool.RemovePreferencesNode.suppressFlush</CODE>
-     * <DD>If <CODE>true</CODE>, do not flush (commit) the changes to the named
-     * node. Default action is to flush the change.
      * </DL>
      * 
      * @param args command line arguments
@@ -97,12 +94,8 @@ public class RemovePreferencesNode implements Callable<Void> {
 
         var prefs = systemRoot ? Preferences.systemRoot().node(node) : Preferences.userRoot().node(node);
         var removeNodeAction = new RemovePreferencesNode(prefs);
-        var suppressFlush = Boolean.getBoolean(RemovePreferencesNode.class.getName() + ".suppressFlush");
         try {
             removeNodeAction.call();
-            if (!suppressFlush) {
-                new FlushPreferences(prefs).call();
-            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

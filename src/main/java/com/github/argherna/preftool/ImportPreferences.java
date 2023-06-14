@@ -25,7 +25,6 @@ public class ImportPreferences implements Callable<Void> {
      * @param inputStream the InputStream to read XML from.
      */
     public ImportPreferences(InputStream inputStream) {
-        LOGGER.log(INFO, "Importing preferences");
         this.inputStream = inputStream;
     }
 
@@ -42,6 +41,7 @@ public class ImportPreferences implements Callable<Void> {
      */
     @Override
     public Void call() throws Exception {
+        LOGGER.log(INFO, "Importing preferences");
         Preferences.importPreferences(inputStream);
         return null;
     }
