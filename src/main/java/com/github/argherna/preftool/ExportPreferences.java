@@ -93,7 +93,7 @@ public class ExportPreferences implements Callable<Void> {
      * 
      * <PRE>
      * <CODE>java [options] \
-     *     com.github.argherna.preftool.ImportPreferences [options]</CODE>
+     *     com.github.argherna.preftool.ExportPreferences [options]</CODE>
      * </PRE>
      * 
      * <P>
