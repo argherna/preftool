@@ -9,13 +9,12 @@ import com.github.argherna.preftool.runtime.ui.PrefToolUI;
  */
 public final class PrefToolMain {
 
-    static final Boolean DRY_RUN =
-            Boolean.getBoolean(PrefToolMain.class.getPackageName() + ".dryrun");
+    static final Boolean DRY_RUN = Boolean.getBoolean(PrefToolMain.class.getPackageName() + ".dryrun");
 
-    static final Boolean SHOWTRACES =
-            Boolean.getBoolean(PrefToolMain.class.getPackageName() + ".showtraces");
+    static final Boolean SHOWTRACES = Boolean.getBoolean(PrefToolMain.class.getPackageName() + ".showtraces");
 
-    private PrefToolMain() {}
+    private PrefToolMain() {
+    }
 
     public static void main(String[] args) {
         try {
@@ -28,8 +27,12 @@ public final class PrefToolMain {
         // creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                var ui = new PrefToolUI();
-                ui.setVisible(true);
+                try {
+                    var ui = new PrefToolUI();
+                    ui.setVisible(true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

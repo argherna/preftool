@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JTree;
@@ -44,7 +45,13 @@ class ImportUIAction extends AbstractPreferenceUIAction {
         }
 
         // Update the user interface (eagerly)
-        preferencesNodeTree.setModel(UIUtilities.createPreferencesTreeModel());
+        var modelFactory = new PreferencesTreeModelFactory();
+        try {
+            var refreshedImportedModel = modelFactory.create();
+            preferencesNodeTree.setModel(refreshedImportedModel);
+        } catch (BackingStoreException e1) {
+            e1.printStackTrace();
+        }
     }
 
     private File getImportFile() {

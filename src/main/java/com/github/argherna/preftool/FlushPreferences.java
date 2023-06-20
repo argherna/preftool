@@ -37,7 +37,6 @@ public class FlushPreferences implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         LOGGER.log(System.Logger.Level.INFO, "Flushing {0}", preferences);
-        preferences.sync();
         preferences.flush();
         return null;
     }
