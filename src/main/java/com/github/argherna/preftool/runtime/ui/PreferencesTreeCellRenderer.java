@@ -10,7 +10,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 /**
  * TreeCellRenderer for Preferences data.
  */
-class PreferencesTreeCellRenderer extends DefaultTreeCellRenderer {
+public class PreferencesTreeCellRenderer extends DefaultTreeCellRenderer {
 
     /**
      * Renders a node in the tree with Preferences data.

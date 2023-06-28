@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.JTree;
@@ -15,7 +16,7 @@ import com.github.argherna.preftool.ImportPreferences;
 /**
  * An Action that imports Preferences from an XML file.
  */
-class ImportUIAction extends AbstractPreferenceUIAction {
+public class ImportUIAction extends AbstractPreferenceUIAction {
 
     private final JTree preferencesNodeTree;
 
@@ -24,10 +25,18 @@ class ImportUIAction extends AbstractPreferenceUIAction {
      *
      * @param preferencesNodeTree JTree to be updated after a successful import.
      */
-    ImportUIAction(JTree preferencesNodeTree) {
+    public ImportUIAction(JTree preferencesNodeTree) {
         this.preferencesNodeTree = preferencesNodeTree;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * <P>
+     * This implementation will open a file to import its data into the Preferences.
+     * 
+     * @see Preferences#importPreferences(java.io.InputStream)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         var importFile = getImportFile();
@@ -54,6 +63,13 @@ class ImportUIAction extends AbstractPreferenceUIAction {
         }
     }
 
+    /**
+     * Return the File representing from where the imported Preferences data will be
+     * read. If the user cancels the load,
+     * {@link AbstractPreferenceUIAction#DEV_NULL} is returned.
+     * 
+     * @return File object
+     */
     private File getImportFile() {
         var importFile = DEV_NULL;
         var jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());

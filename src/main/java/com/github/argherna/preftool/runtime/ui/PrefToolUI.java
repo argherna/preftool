@@ -20,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Main panel for the PrefTool user interface.
@@ -34,6 +33,7 @@ public class PrefToolUI extends JFrame {
      * This instance will assemble the main frame for the user interface. Clients
      * will need to call
      * {@linkplain #setVisible(boolean) setVisible(true)} to show the window.
+     * 
      * @throws BackingStoreException if a BackingStoreException is thrown.
      */
     public PrefToolUI() throws BackingStoreException {
@@ -41,28 +41,30 @@ public class PrefToolUI extends JFrame {
 
         var preferencesValuesTable = createPreferencesValuesTable();
         var preferencesNodeTree = createPreferencesNodeTree();
-        var importUIAction = new ImportUIAction(preferencesNodeTree);
-
-        var exportUIAction = new ExportUIAction();
         var nodeAddressLabel = createNodeAddressLabel();
+
+        var editPreferencesValueUIAction = new EditPreferencesValueUIAction(preferencesValuesTable);
+        var importUIAction = new ImportUIAction(preferencesNodeTree);
+        var exportUIAction = new ExportUIAction();
         var newNodeUIAction = new NewNodeUIAction(preferencesNodeTree);
         var refreshPreferencesTreeUIAction = new RefreshPreferencesTreeUIAction(preferencesNodeTree);
-
         var addPreferencesKeyUIAction = new AddPreferencesKeyUIAction(preferencesValuesTable);
 
         nodeAddressLabel.addPropertyChangeListener("text",
-                new AddressLabelTextChangeListener(List.of(exportUIAction,
-                        newNodeUIAction, addPreferencesKeyUIAction),
-                        List.of()));
-
+                new AddressLabelTextChangeListener(List.of(exportUIAction),
+                        List.of(newNodeUIAction, addPreferencesKeyUIAction), 
+                        List.of(editPreferencesValueUIAction)));
         preferencesNodeTree.addTreeSelectionListener(
-                new PreferencesTreeSelectionListener(preferencesValuesTable, nodeAddressLabel));
+                new PreferencesValuesTableUpdateListener(preferencesValuesTable));
+        preferencesNodeTree.addTreeSelectionListener(new NodeAddressLabelUpdateListener(nodeAddressLabel));
+        preferencesValuesTable.getSelectionModel()
+                .addListSelectionListener(new PreferencesValuesListSelectionListener(editPreferencesValueUIAction));
 
         add(createMainUIPanel(preferencesNodeTree, preferencesValuesTable, nodeAddressLabel));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(createMenuBar(importUIAction, exportUIAction, new ExitUIAction(),
-                newNodeUIAction, addPreferencesKeyUIAction, refreshPreferencesTreeUIAction));
-        addWindowListener(new PrefToolWindowListener());
+                newNodeUIAction, addPreferencesKeyUIAction, editPreferencesValueUIAction,
+                refreshPreferencesTreeUIAction));
         pack();
     }
 
@@ -103,18 +105,13 @@ public class PrefToolUI extends JFrame {
     /**
      *
      * @return JTree with Preferences node data.
-     * @throws BackingStoreException
+     * @throws BackingStoreException if a BackingStoreException is thrown.
+     * 
+     * @see PreferencesNodeTreeFactory
      */
     private JTree createPreferencesNodeTree() throws BackingStoreException {
-        var treeModelFactory = new PreferencesTreeModelFactory();
-        var preferencesTreeModel = treeModelFactory.create();
-        var preferencesNodeTree = new JTree(preferencesTreeModel);
-        preferencesNodeTree.getSelectionModel()
-                .setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        preferencesNodeTree.setCellRenderer(new PreferencesTreeCellRenderer());
-        preferencesNodeTree.setName("preferencesNodeTree");
-        preferencesNodeTree.setRootVisible(true);
-        return preferencesNodeTree;
+        var preferencesNodeTreeFactory = new PreferencesNodeTreeFactory();
+        return preferencesNodeTreeFactory.create();
     }
 
     /**
@@ -135,9 +132,8 @@ public class PrefToolUI extends JFrame {
      * @return JTable containing Preferences keys, types, and values.
      */
     private JTable createPreferencesValuesTable() {
-        var preferencesValuesTable = new JTable();
-        preferencesValuesTable.setModel(UIUtilities.createPreferencesDataTableModel());
-        preferencesValuesTable.setName("preferencesValuesTable");
+        var preferencesValueTableFactory = new PreferencesValuesTableFactory();
+        var preferencesValuesTable = preferencesValueTableFactory.create();
         return preferencesValuesTable;
     }
 
@@ -164,7 +160,7 @@ public class PrefToolUI extends JFrame {
         splitPane.setTopComponent(treeView);
         splitPane.setBottomComponent(tableView);
 
-        splitPane.setDividerLocation(100);
+        splitPane.setDividerLocation(300);
         splitPane.setPreferredSize(new Dimension(1000, 600));
         splitPane.setName("preferencesSplitPane");
         return splitPane;
@@ -201,16 +197,18 @@ public class PrefToolUI extends JFrame {
      * @param exitUIAction                   Action for the exit JMenuItem.
      * @param newNodeUIAction                Action for the new node JMenuItem.
      * @param addPreferencesKeyUIAction      Action for the add key JMenuItem.
+     * @param editPreferencesValueUIAction   Action for the edit preferences value
+     *                                       JMenuItem.
      * @param refreshPreferencesTreeUIAction Action for the refresh JMenuItem.
      * @return the menu for the user interface.
      */
     private JMenuBar createMenuBar(Action importUIAction, Action exportUIAction,
             Action exitUIAction, Action newNodeUIAction, Action addPreferencesKeyUIAction,
-            Action refreshPreferencesTreeUIAction) {
+            Action editPreferencesValueUIAction, Action refreshPreferencesTreeUIAction) {
         var menuBar = new JMenuBar();
         menuBar.setName("menuBar");
         menuBar.add(createFileMenu(importUIAction, exportUIAction, exitUIAction));
-        menuBar.add(createEditMenu(newNodeUIAction, addPreferencesKeyUIAction));
+        menuBar.add(createEditMenu(newNodeUIAction, addPreferencesKeyUIAction, editPreferencesValueUIAction));
         menuBar.add(createViewMenu(refreshPreferencesTreeUIAction));
         return menuBar;
     }
@@ -290,12 +288,19 @@ public class PrefToolUI extends JFrame {
      * @param addKeyAction  Action to add key value pair to a Preferences node.
      * @return the Edit JMenu.
      */
-    private JMenu createEditMenu(Action newNodeAction, Action addKeyAction) {
+    private JMenu createEditMenu(Action newNodeAction, Action addKeyAction, Action editPreferencesValueAction) {
         newNodeAction.setEnabled(false);
         addKeyAction.setEnabled(false);
+        editPreferencesValueAction.setEnabled(false);
         var editMenu = new JMenu("Edit");
         editMenu.setName("editMenu");
         editMenu.add(createEditNewSubmenu(newNodeAction, addKeyAction));
+        editMenu.addSeparator();
+        var editPreferencesValueMenuItem = new JMenuItem(editPreferencesValueAction);
+        editPreferencesValueMenuItem.setName("editPreferencesValueMenuItem");
+        editPreferencesValueMenuItem.setText("Value...");
+        editPreferencesValueMenuItem.setEnabled(false);
+        editMenu.add(editPreferencesValueMenuItem);
         return editMenu;
     }
 

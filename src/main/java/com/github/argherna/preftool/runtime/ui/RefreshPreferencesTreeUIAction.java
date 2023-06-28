@@ -7,7 +7,7 @@ import javax.swing.JTree;
 /**
  * Refresh the JTree model with modified Preferences nodes and keys.
  */
-class RefreshPreferencesTreeUIAction extends AbstractPreferenceUIAction {
+public class RefreshPreferencesTreeUIAction extends AbstractPreferenceUIAction {
 
     private final JTree preferencesNodeTree;
 

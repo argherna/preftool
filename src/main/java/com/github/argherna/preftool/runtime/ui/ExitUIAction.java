@@ -6,7 +6,7 @@ import javax.swing.AbstractAction;
 /**
  * Action that exits the UI, closing the application.
  */
-class ExitUIAction extends AbstractAction {
+public class ExitUIAction extends AbstractAction {
 
     ExitUIAction() {
         super("Exit");

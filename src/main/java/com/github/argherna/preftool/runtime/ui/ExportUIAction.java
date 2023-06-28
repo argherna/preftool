@@ -11,18 +11,19 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.github.argherna.preftool.ExportPreferences;
 
-
 /**
  * An Action that exports a Preferences node.
  */
-class ExportUIAction extends AbstractPreferenceUIAction {
+public class ExportUIAction extends AbstractPreferenceUIAction {
 
     /**
      * Processes the given ActionEvent.
      *
      * <P>
-     * Preferences will be exported if the Preferences node can be determined from the ActionEvent
-     * and if a file to save the output to is selected. Errors are logged and feedback is given to
+     * Preferences will be exported if the Preferences node can be determined from
+     * the ActionEvent
+     * and if a file to save the output to is selected. Errors are logged and
+     * feedback is given to
      * the user.
      *
      * @param e the ActionEvent.
@@ -49,6 +50,13 @@ class ExportUIAction extends AbstractPreferenceUIAction {
         }
     }
 
+    /**
+     * Return the File representing where the exported Preferences data will be
+     * saved. If the user cancels the save,
+     * {@link AbstractPreferenceUIAction#DEV_NULL} is returned.
+     * 
+     * @return File object
+     */
     private File getSaveFile() {
         var saveFile = DEV_NULL;
         var jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());

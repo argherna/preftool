@@ -99,6 +99,7 @@ public class PreferencesUtilities {
      * @param value possible byte array value as String.
      * @return {@code true} if the value is a byte array.
      */
+    // TODO: instead of this stupid way of doing it, need to figure out if string value is Base64 encoded and if so, return true.
     public static boolean isValueByteArray(Preferences pref, String key) {
         return !Arrays.equals(pref.getByteArray(key, EMPTY_BYTE_ARRAY), EMPTY_BYTE_ARRAY);
     }
@@ -115,8 +116,6 @@ public class PreferencesUtilities {
         var prefValue = pref.get(key, "");
         if (isValueBoolean(prefValue)) {
             valueType = boolean.class;
-        } else if (isValueByteArray(pref, key)) {
-            valueType = byte[].class;
         } else if (isValueInt(prefValue)) {
             valueType = int.class;
         } else if (isValueLong(prefValue)) {
@@ -125,6 +124,8 @@ public class PreferencesUtilities {
             valueType = float.class;
         } else if (isValueDouble(prefValue)) {
             valueType = double.class;
+        } else if (isValueByteArray(pref, key)) {
+            valueType = byte[].class;
         }
         return valueType;
     }

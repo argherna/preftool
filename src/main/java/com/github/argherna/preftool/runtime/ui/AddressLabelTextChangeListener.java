@@ -9,25 +9,31 @@ import java.util.Objects;
 
 /**
  * PropertyChangeListener that listens for changes to text on a JLabel.
+ * 
+ * <P>
+ * Sets the Preferences node address for all Actions in each category.
  */
-class AddressLabelTextChangeListener implements PropertyChangeListener {
+public class AddressLabelTextChangeListener implements PropertyChangeListener {
 
     private final List<AbstractPreferenceUIAction> actions;
 
-    // While under development, moveActions will be enabled/disabled.
-    private final List<AbstractPreferenceUIAction> moveActions;
+    private final List<AbstractPreferenceUIAction> changeActions;
+
+    private final List<AbstractPreferenceUIAction> editActions;
 
     /**
      * Construct a new AddressLabelTextChangeListener instance.
      *
-     * @param actions     AbstractPreferenceUIAction objects to enable or disable.
-     * @param moveActions AbstractPreferenceUIAction objects that control moving
-     *                    nodes and keys.
+     * @param actions       AbstractPreferenceUIAction objects to enable or disable.
+     * @param changeActions AbstractPreferenceUIAction objects that control changing
+     *                      nodes and keys.
      */
     public AddressLabelTextChangeListener(List<AbstractPreferenceUIAction> actions,
-            List<AbstractPreferenceUIAction> moveActions) {
+            List<AbstractPreferenceUIAction> changeActions,
+            List<AbstractPreferenceUIAction> editActions) {
         this.actions = actions;
-        this.moveActions = moveActions;
+        this.changeActions = changeActions;
+        this.editActions = editActions;
     }
 
     /**
@@ -48,18 +54,18 @@ class AddressLabelTextChangeListener implements PropertyChangeListener {
                 action.setPreferencesNodeAddress(evt.getNewValue().toString());
                 action.setEnabled(true);
             }
-            // TODO Issue 1: Someday when the problem of consistently deleting a preference
-            // properly from an event thread is figured out, the moveActions list can be
-            // done away with completely and the ".disableActions" system property can be
-            // removed.
-            for (AbstractPreferenceUIAction moveAction : moveActions) {
-                moveAction.setPreferencesNodeAddress(evt.getNewValue().toString());
-                moveAction.setEnabled(!DISABLE_ACTIONS);
+            for (AbstractPreferenceUIAction changeAction : changeActions) {
+                changeAction.setPreferencesNodeAddress(evt.getNewValue().toString());
+                changeAction.setEnabled(!DISABLE_ACTIONS);
+            }
+            // edit actions are enabled elsewhere, but still should be informed when the
+            // node address changes.
+            for (AbstractPreferenceUIAction editAction : editActions) {
+                editAction.setPreferencesNodeAddress(evt.getNewValue().toString());
             }
         } else if (Objects.nonNull(evt.getNewValue()) && evt.getNewValue().toString().isEmpty()) {
-
             actions.stream().forEach(a -> a.setEnabled(false));
-            moveActions.stream().forEach(ma -> ma.setEnabled(false));
+            changeActions.stream().forEach(ma -> ma.setEnabled(false));
         }
     }
 

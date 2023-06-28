@@ -13,20 +13,34 @@ import com.github.argherna.preftool.PreferencesUtilities;
 /**
  * Action that adds a key and value pair to a Preferences node.
  */
-class AddPreferencesKeyUIAction extends AbstractPreferenceUIAction {
+public class AddPreferencesKeyUIAction extends AbstractPreferenceUIAction {
 
     private final JTable preferencesValuesTable;
 
+    /**
+     * Constructs a new AddPreferencesKeyUIAction with a JTable for holding
+     * Preferences data.
+     * 
+     * @param preferencesValuesTable JTable with Preferences keys, value types, and
+     *                               values.
+     */
     public AddPreferencesKeyUIAction(JTable preferencesValuesTable) {
         this.preferencesValuesTable = preferencesValuesTable;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * <P>
+     * This implementation will gather Preferences data from a dialog box, then
+     * apply that to this instance's JTable.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        var addKeyUI = new AddKeyUI();
-        addKeyUI.showUI();
+        var addPreferencesKeyUI = new AddPreferencesKeyUI();
+        addPreferencesKeyUI.showUI();
 
-        if (addKeyUI.isInputCanceled()) {
+        if (addPreferencesKeyUI.isInputCanceled()) {
             return;
         }
 
@@ -35,9 +49,9 @@ class AddPreferencesKeyUIAction extends AbstractPreferenceUIAction {
             return;
         }
 
-        var key = addKeyUI.getPreferencesKey();
-        var valueType = addKeyUI.getPreferencesType();
-        var value = addKeyUI.getPreferencesValue();
+        var key = addPreferencesKeyUI.getPreferencesKeyText();
+        var valueType = addPreferencesKeyUI.getPreferencesType();
+        var value = addPreferencesKeyUI.getPreferencesValueText();
         var keyAdder = new AddPreferencesKey(preferences, key, valueType, value);
         try {
             keyAdder.call();
@@ -47,7 +61,7 @@ class AddPreferencesKeyUIAction extends AbstractPreferenceUIAction {
         }
 
         var tableModel = (DefaultTableModel) preferencesValuesTable.getModel();
-        tableModel.insertRow(tableModel.getRowCount(), new Object[] {key, valueType.getName(),
-                PreferencesUtilities.getTypedValueFrom(preferences, key, valueType)});
+        tableModel.insertRow(tableModel.getRowCount(), new Object[] { key, valueType.getName(),
+                PreferencesUtilities.getTypedValueFrom(preferences, key, valueType) });
     }
 }

@@ -17,9 +17,7 @@ import com.github.argherna.preftool.PreferencesUtilities;
 /**
  * An Action that creates a child Preferences node on a parent.
  */
-class NewNodeUIAction extends AbstractPreferenceUIAction {
-
-    private static final System.Logger LOGGER = System.getLogger(NewNodeUIAction.class.getName());
+public class NewNodeUIAction extends AbstractPreferenceUIAction {
 
     private final JTree preferencesNodeTree;
 
@@ -28,7 +26,7 @@ class NewNodeUIAction extends AbstractPreferenceUIAction {
      *
      * @param preferencesNodeTree JTree to be updated after a successful add.
      */
-    NewNodeUIAction(JTree preferencesNodeTree) {
+    public NewNodeUIAction(JTree preferencesNodeTree) {
         this.preferencesNodeTree = preferencesNodeTree;
     }
 
